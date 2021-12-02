@@ -1,0 +1,34 @@
+"pin.button.cancel" = "İptal";
+"pin.button.confirm" = "Onayla";
+
+// Set PIN
+
+"set_pin.title" = "Kod";
+"set_pin.info" = "Şifre, cüzdan kilidini açmak için kullanılacak";
+"set_pin.confirm.info" = "Onayla";
+"set_pin.wrong_confirmation" = "Şifre uyuşmadı. Tekrar deneyin";
+
+// Edit PIN
+
+"edit_pin.title" = "Kod Değiştir";
+"edit_pin.unlock_info" = "Şimdiki Kod";
+"edit_pin.new_pin_info" = "Yeni Kod";
+
+// Unlock PIN
+
+"unlock_pin.info" = "Kod";
+"unlock_pin.cant_save_pin" = "Eyvah! PİNninizi kaydetemiyoruz, acilen bizimle iletişime geçin!";
+"unlock_pin.blocked_until" = "Engellendi: %@";
+"rate_list.updated" = "güncellendi";
+"biometric_usage_reason" = "Cüzdan kilidini aç";
+
+//NumPad
+
+"numpad_2" = "A B C";
+"numpad_3" = "D E F";
+"numpad_4" = "G H I";
+"numpad_5" = "J K L";
+"numpad_6" = "M N O";
+"numpad_7" = "P Q R S";
+"numpad_8" = "T U V";
+"numpad_9" = "W X Y Z";
