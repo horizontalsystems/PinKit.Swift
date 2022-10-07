@@ -9,7 +9,7 @@ class PinView: UIView {
     let pinDotsView = PinDotsView()
     private let topLabel = UILabel()
     private let cancelButtonView = UIView()
-    private let cancelButton = ThemeButton().apply(style: .secondaryTransparent)
+    private let cancelButton = SecondaryButton()
 
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -51,6 +51,7 @@ class PinView: UIView {
             maker.center.equalToSuperview()
         }
 
+        cancelButton.set(style: .transparent)
         cancelButton.setTitle("pin.button.cancel".localized, for: .normal)
         cancelButton.isHidden = true
     }
@@ -67,7 +68,7 @@ class PinView: UIView {
         style.lineSpacing = 2.2
         style.alignment = .center
         let font: UIFont = page.isTitle ? .headline1 : .subhead2
-        let color: UIColor = page.isTitle ? .themeOz : .themeGray
+        let color: UIColor = page.isTitle ? .themeLeah : .themeGray
         let attributes: [NSAttributedString.Key: Any] = [
             NSAttributedString.Key.foregroundColor: error.isEmpty ? color : .themeLucian,
             NSAttributedString.Key.font: font,

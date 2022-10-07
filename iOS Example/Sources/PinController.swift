@@ -11,14 +11,18 @@ class PinController: ThemeViewController {
 
     private let pinLabel = UILabel()
 
-    private let clearPinButton = ThemeButton().apply(style: .primaryRed)
-    private let setPinButton = ThemeButton()
-    private let editPinButton = ThemeButton()
+    private let clearPinButton = PrimaryButton()
+    private let setPinButton = PrimaryButton()
+    private let editPinButton = PrimaryButton()
+
+    private var themeModeIterator = 0
+    private var themeBarButtonItem: UIBarButtonItem?
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        App.shared.pinKitDelegate.viewController = self
+
+        themeBarButtonItem = UIBarButtonItem(title: ThemeManager.shared.themeMode.rawValue, style: .plain, target: self, action: #selector(onToggleLightMode))
+        navigationItem.rightBarButtonItem = themeBarButtonItem
 
         view.addSubview(pinLabel)
         pinLabel.snp.makeConstraints { maker in
@@ -60,10 +64,11 @@ class PinController: ThemeViewController {
         }
 
         clearPinButton.setTitle("Clear Pin", for: .normal)
+        clearPinButton.set(style: .red)
         setPinButton.setTitle("Set Pin", for: .normal)
-        setPinButton.apply(style: .primaryGray)
+        setPinButton.set(style: .gray)
         editPinButton.setTitle("Edit Pin", for: .normal)
-        editPinButton.apply(style: .primaryYellow)
+        editPinButton.set(style: .yellow)
 
         clearPinButton.addTarget(self, action: #selector(onClearPin), for: .touchUpInside)
         setPinButton.addTarget(self, action: #selector(onSetPin), for: .touchUpInside)
@@ -72,6 +77,42 @@ class PinController: ThemeViewController {
         updateUI()
 
         App.shared.pinKit.lock()
+
+        let stabView = UIView()
+
+        let fixedSizeView = UIView()
+        stabView.addSubview(fixedSizeView)
+        fixedSizeView.snp.makeConstraints { maker in
+            maker.edges.equalToSuperview()
+            maker.width.height.equalTo(50)
+        }
+
+        let testButton = PrimaryCircleButton()
+
+        stabView.addSubview(testButton)
+        testButton.snp.makeConstraints { maker in
+            maker.edges.equalToSuperview()
+        }
+
+        testButton.set(style: .red)
+        testButton.set(image: UIImage(named: "Cell Icon"))
+
+        view.addSubview(stabView)
+        stabView.snp.makeConstraints { maker in
+            maker.leading.equalToSuperview()
+            maker.top.equalTo(clearPinButton.snp.bottom).offset(CGFloat.margin32)
+        }
+
+        let primaryTestButton = PrimaryCircleButton()
+
+        view.addSubview(primaryTestButton)
+        primaryTestButton.snp.makeConstraints { maker in
+            maker.top.equalTo(stabView)
+            maker.leading.equalTo(stabView.snp.trailing).offset(16)
+        }
+
+        primaryTestButton.set(style: .gray)
+        primaryTestButton.set(image: UIImage(named: "arrow_swap_2_24"))
     }
 
     private func updateUI() {
@@ -82,6 +123,28 @@ class PinController: ThemeViewController {
         clearPinButton.isEnabled = isPinSet
         setPinButton.isEnabled = !isPinSet
         editPinButton.isEnabled = isPinSet
+    }
+
+    @objc func onToggleLightMode() {
+        themeModeIterator += 1
+        if themeModeIterator > 2 {
+            themeModeIterator = 0
+        }
+
+        if themeModeIterator == 0 {
+            ThemeManager.shared.themeMode = .system
+            UIApplication.shared.windows.first(where: \.isKeyWindow)?.overrideUserInterfaceStyle = .unspecified
+        }
+        if themeModeIterator == 1 {
+            ThemeManager.shared.themeMode = .dark
+            UIApplication.shared.windows.first(where: \.isKeyWindow)?.overrideUserInterfaceStyle = .dark
+        }
+        if themeModeIterator == 2 {
+            ThemeManager.shared.themeMode = .light
+            UIApplication.shared.windows.first(where: \.isKeyWindow)?.overrideUserInterfaceStyle = .light
+        }
+
+        themeBarButtonItem?.title = ThemeManager.shared.themeMode.rawValue
     }
 
     @objc func onClearPin() {

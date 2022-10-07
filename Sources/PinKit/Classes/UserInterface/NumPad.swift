@@ -94,7 +94,7 @@ class NumPad: UICollectionView {
     }
 
     private var interitemSpacing: CGFloat {
-        floor((bounds.width - columnCount * bounds.width / (columnCount * itemSizeRatio)) / (columnCount - 1)) // width witout items divided on interitem spacing count
+        floor((bounds.width - columnCount * bounds.width / (columnCount * itemSizeRatio)) / (columnCount - 1)) // width without items divided on interitem spacing count
     }
 
     private var lineSpacing: CGFloat {
@@ -238,7 +238,7 @@ class NumPadNumberCell: UICollectionViewCell {
 
         textHolderView.addSubview(numberLabel)
         numberLabel.font = .title2R
-        numberLabel.textColor = .themeOz
+        numberLabel.textColor = .themeLeah
 
         textHolderView.addSubview(lettersLabel)
         lettersLabel.font = .micro
@@ -267,7 +267,7 @@ class NumPadNumberCell: UICollectionViewCell {
         numberLabel.text = number
         lettersLabel.text = letters
         if enabled {
-            numberLabel.textColor = .themeOz
+            numberLabel.textColor = .themeLeah
             lettersLabel.textColor = .themeGray50
         } else {
             numberLabel.textColor = .themeSteel10
@@ -304,14 +304,13 @@ class NumPadNumberCell: UICollectionViewCell {
 }
 
 class NumPadImageCell: UICollectionViewCell {
-
-    private let button = ThemeButton()
+    private let button = UIButton()
     private var onTap: (() -> ())?
 
     override init(frame: CGRect) {
         super.init(frame: frame)
 
-        addSubview(button)
+        contentView.addSubview(button)
         button.snp.makeConstraints { maker in
             maker.edges.equalToSuperview()
         }
