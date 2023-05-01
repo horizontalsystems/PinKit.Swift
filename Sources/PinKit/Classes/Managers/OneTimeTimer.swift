@@ -1,5 +1,9 @@
 import Foundation
 
+protocol IPeriodicTimerDelegate: AnyObject {
+    func onFire()
+}
+
 class OneTimeTimer {
     weak var delegate: IPeriodicTimerDelegate?
 
@@ -14,7 +18,7 @@ class OneTimeTimer {
     }
 }
 
-extension OneTimeTimer: IOneTimeTimer {
+extension OneTimeTimer {
 
     func schedule(date: Date) {
         timer?.invalidate()

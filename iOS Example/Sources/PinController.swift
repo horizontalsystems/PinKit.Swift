@@ -1,13 +1,13 @@
+import Combine
 import UIKit
 import ThemeKit
 import SnapKit
 import PinKit
 import StorageKit
-import RxSwift
 import ComponentKit
 
 class PinController: ThemeViewController {
-    private let disposeBag = DisposeBag()
+    private var cancellables = Set<AnyCancellable>()
 
     private let pinLabel = UILabel()
 
@@ -33,11 +33,12 @@ class PinController: ThemeViewController {
         pinLabel.textColor = .themeJacob
         pinLabel.textAlignment = .center
 
-        App.shared.pinKit.isPinSetObservable
-                .subscribe { isPinSet in
-                    self.updateUI()
+        App.shared.pinKit.isPinSetPublisher
+                .receive(on: DispatchQueue.main)
+                .sink { [weak self] isPinSet in
+                    self?.updateUI()
                 }
-                .disposed(by: disposeBag)
+                .store(in: &cancellables)
 
         view.addSubview(clearPinButton)
         view.addSubview(setPinButton)

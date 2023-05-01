@@ -1,7 +1,7 @@
 import UIKit
 import ThemeKit
 
-public class SetPinRouter {
+class SetPinRouter {
     weak var viewController: UIViewController?
 
     private let delegate: ISetPinDelegate
@@ -26,7 +26,7 @@ extension SetPinRouter: ISetPinRouter {
 
 extension SetPinRouter {
 
-    static func module(delegate: ISetPinDelegate, pinManager: IPinManager) -> UIViewController {
+    static func module(delegate: ISetPinDelegate, pinManager: PinManager) -> UIViewController {
         let router = SetPinRouter(delegate: delegate)
         let interactor = PinInteractor(pinManager: pinManager)
         let presenter = SetPinPresenter(interactor: interactor, router: router)

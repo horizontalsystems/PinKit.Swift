@@ -1,11 +1,6 @@
 import Foundation
 
-class LockoutUntilDateFactory: ILockoutUntilDateFactory {
-    private let currentDateProvider: ICurrentDateProvider
-
-    init(currentDateProvider: ICurrentDateProvider) {
-        self.currentDateProvider = currentDateProvider
-    }
+class LockoutUntilDateFactory {
 
     func lockoutUntilDate(failedAttempts: Int, lockoutTimestamp: TimeInterval, uptime: TimeInterval) -> Date {
         var timeFrame: TimeInterval = 0
@@ -24,7 +19,7 @@ class LockoutUntilDateFactory: ILockoutUntilDateFactory {
             timeFrame = 60 * 30 - secondsFromLockout
         }
 
-        return currentDateProvider.currentDate.addingTimeInterval(timeFrame < 0 ? 0 : timeFrame)
+        return Date().addingTimeInterval(timeFrame < 0 ? 0 : timeFrame)
     }
 
 }

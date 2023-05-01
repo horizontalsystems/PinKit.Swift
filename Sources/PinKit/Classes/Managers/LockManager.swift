@@ -4,7 +4,7 @@ import StorageKit
 class LockManager {
     private let lastExitDateKey = "last_exit_date_key"
 
-    private let pinManager: IPinManager
+    private let pinManager: PinManager
     private let localStorage: ILocalStorage
 
     private let lockTimeout: Double = 60
@@ -12,7 +12,7 @@ class LockManager {
 
     weak var delegate: IPinKitDelegate?
 
-    init(pinManager: IPinManager, localStorage: ILocalStorage) {
+    init(pinManager: PinManager, localStorage: ILocalStorage) {
         self.pinManager = pinManager
         self.localStorage = localStorage
 
@@ -21,7 +21,7 @@ class LockManager {
 
 }
 
-extension LockManager: ILockManager {
+extension LockManager {
 
     func didEnterBackground() {
         guard !isLocked else {

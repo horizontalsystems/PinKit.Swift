@@ -32,7 +32,7 @@ extension UnlockPinRouter: IUnlockPinRouter {
 
 extension UnlockPinRouter {
 
-    static func module(delegate: IUnlockDelegate, lockManagerDelegate: IUnlockDelegate, pinManager: IPinManager, lockoutManager: ILockoutManager, biometryUnlockMode: BiometryUnlockMode, insets: UIEdgeInsets, cancellable: Bool = true, autoDismiss: Bool = true, biometryManager: IBiometryManager) -> UIViewController {
+    static func module(delegate: IUnlockDelegate, lockManagerDelegate: IUnlockDelegate, pinManager: PinManager, lockoutManager: LockoutManager, biometryUnlockMode: BiometryUnlockMode, insets: UIEdgeInsets, cancellable: Bool = true, autoDismiss: Bool = true, biometryManager: BiometryManager) -> UIViewController {
         let biometricManager = BiometricManager()
         let timer = OneTimeTimer()
 

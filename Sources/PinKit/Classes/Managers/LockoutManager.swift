@@ -6,27 +6,31 @@ class LockoutManager {
     private let lockTimestampKey = "lock_timestamp_keychain_key"
 
     private var secureStorage: ISecureStorage
-    private var uptimeProvider: IUptimeProvider
-    private var lockoutTimeFrameFactory: ILockoutUntilDateFactory
+    private var lockoutTimeFrameFactory: LockoutUntilDateFactory
 
     private let lockoutThreshold = 5
 
-    init(secureStorage: ISecureStorage, uptimeProvider: IUptimeProvider, lockoutTimeFrameFactory: ILockoutUntilDateFactory) {
+    init(secureStorage: ISecureStorage, lockoutTimeFrameFactory: LockoutUntilDateFactory) {
         self.secureStorage = secureStorage
-        self.uptimeProvider = uptimeProvider
         self.lockoutTimeFrameFactory = lockoutTimeFrameFactory
+    }
+
+    private var uptime: TimeInterval {
+        var uptime = timespec()
+        clock_gettime(CLOCK_MONOTONIC_RAW, &uptime)
+        return TimeInterval(uptime.tv_sec)
     }
 
 }
 
-extension LockoutManager: ILockoutManager {
+extension LockoutManager {
 
     var unlockAttempts: Int {
         secureStorage.value(for: unlockAttemptsKey) ?? 0
     }
 
     var currentState: LockoutState {
-        let uptime = uptimeProvider.uptime
+        let uptime = uptime
         let lockoutTimestamp = secureStorage.value(for: lockTimestampKey) ?? uptime
 
         let unlockAttempts: Int = secureStorage.value(for: unlockAttemptsKey) ?? 0
@@ -49,7 +53,7 @@ extension LockoutManager: ILockoutManager {
         try? secureStorage.set(value: newValue, for: unlockAttemptsKey)
 
         if newValue >= lockoutThreshold {
-            try? secureStorage.set(value: uptimeProvider.uptime, for: lockTimestampKey)
+            try? secureStorage.set(value: uptime, for: lockTimestampKey)
         }
     }
 
