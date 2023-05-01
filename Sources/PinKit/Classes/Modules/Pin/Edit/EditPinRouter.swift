@@ -1,7 +1,7 @@
 import UIKit
 import ThemeKit
 
-public class EditPinRouter {
+class EditPinRouter {
     weak var viewController: UIViewController?
 }
 
@@ -15,7 +15,7 @@ extension EditPinRouter: IEditPinRouter {
 
 extension EditPinRouter {
 
-    public static func module(pinManager: IPinManager) -> UIViewController {
+    static func module(pinManager: PinManager) -> UIViewController {
         let router = EditPinRouter()
         let interactor = PinInteractor(pinManager: pinManager)
         let presenter = EditPinPresenter(interactor: interactor, router: router)

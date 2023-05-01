@@ -1,18 +1,18 @@
 import Foundation
-import RxSwift
+import Combine
 
 class UnlockPinInteractor {
     weak var delegate: IUnlockPinInteractorDelegate?
 
-    private let pinManager: IPinManager
-    private let biometricManager: IBiometricManager
-    private let lockoutManager: ILockoutManager
-    private var timer: IOneTimeTimer
-    private var biometryManager: IBiometryManager
+    private let pinManager: PinManager
+    private let biometricManager: BiometricManager
+    private let lockoutManager: LockoutManager
+    private var timer: OneTimeTimer
+    private var biometryManager: BiometryManager
 
-    private var disposeBag = DisposeBag()
+    private var cancellables = Set<AnyCancellable>()
 
-    init(pinManager: IPinManager, biometricManager: IBiometricManager, lockoutManager: ILockoutManager, timer: IOneTimeTimer, biometryManager: IBiometryManager) {
+    init(pinManager: PinManager, biometricManager: BiometricManager, lockoutManager: LockoutManager, timer: OneTimeTimer, biometryManager: BiometryManager) {
         self.pinManager = pinManager
         self.biometricManager = biometricManager
         self.lockoutManager = lockoutManager
@@ -39,12 +39,12 @@ extension UnlockPinInteractor: IUnlockPinInteractor {
     }
 
     func subscribeBiometryType() {
-        biometryManager.biometryTypeObservable
-                .observeOn(MainScheduler.instance)
-                .subscribe(onNext: { [weak self] biometryType in
+        biometryManager.biometryTypePublisher
+                .receive(on: DispatchQueue.main)
+                .sink { [weak self] biometryType in
                     self?.delegate?.didUpdate(biometryType: biometryType)
-                })
-                .disposed(by: disposeBag)
+                }
+                .store(in: &cancellables)
     }
 
     func updateLockoutState() {
@@ -75,7 +75,7 @@ extension UnlockPinInteractor: IUnlockPinInteractor {
 
 }
 
-extension UnlockPinInteractor: BiometricManagerDelegate {
+extension UnlockPinInteractor: IBiometricManagerDelegate {
 
     func didValidate() {
         delegate?.didBiometricUnlock()

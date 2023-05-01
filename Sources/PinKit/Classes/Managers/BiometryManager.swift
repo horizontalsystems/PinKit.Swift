@@ -1,51 +1,44 @@
-import RxSwift
+import Combine
 import LocalAuthentication
+import HsExtensions
 
-class BiometryManager: IBiometryManager {
-    private let disposeBag = DisposeBag()
+class BiometryManager {
+    private var tasks = Set<AnyTask>()
 
-    private let subject = PublishSubject<BiometryType>()
+    private let subject = PassthroughSubject<BiometryType, Never>()
 
     var biometryType: BiometryType? {
         didSet {
             if let biometryType = biometryType, oldValue != biometryType {
-                subject.onNext(biometryType)
+                subject.send(biometryType)
             }
         }
     }
 
-    private var biometryTypeSingle: Single<BiometryType> {
-        Single<BiometryType>.create { observer in
-            var authError: NSError?
-            let localAuthenticationContext = LAContext()
-
-            //Some times canEvaluatePolicy responses for too long time leading to stuck in settings controller.
-            //Sending this request to background thread allows to show controller without biometric setting.
-            if localAuthenticationContext.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: &authError) {
-                switch localAuthenticationContext.biometryType {
-                case .faceID: observer(.success(.faceId))
-                case .touchID: observer(.success(.touchId))
-                default: observer(.success(.none))
-                }
-            } else {
-                observer(.success(.none))
-            }
-
-            return Disposables.create()
-        }
-    }
-
-    var biometryTypeObservable: Observable<BiometryType> {
-        subject.asObservable()
+    var biometryTypePublisher: AnyPublisher<BiometryType, Never> {
+        subject.eraseToAnyPublisher()
     }
 
     func refresh() {
-        biometryTypeSingle
-                .subscribeOn(ConcurrentDispatchQueueScheduler(qos: .background))
-                .subscribe(onSuccess: { [weak self] biometryType in
-                    self?.biometryType = biometryType
-                })
-                .disposed(by: disposeBag)
+        Task { [weak self] in
+            var authError: NSError?
+            let localAuthenticationContext = LAContext()
+            let biometryType: BiometryType
+
+            // Some times canEvaluatePolicy responses for too long time leading to stuck in settings controller.
+            // Sending this request to background thread allows to show controller without biometric setting.
+            if localAuthenticationContext.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: &authError) {
+                switch localAuthenticationContext.biometryType {
+                case .faceID: biometryType = .faceId
+                case .touchID: biometryType = .touchId
+                default: biometryType = .none
+                }
+            } else {
+                biometryType = .none
+            }
+
+            self?.biometryType = biometryType
+        }.store(in: &tasks)
     }
 
 }

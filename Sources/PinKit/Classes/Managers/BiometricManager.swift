@@ -1,11 +1,16 @@
 import Foundation
 import LocalAuthentication
 
-class BiometricManager {
-    weak var delegate: BiometricManagerDelegate?
+protocol IBiometricManagerDelegate: AnyObject {
+    func didValidate()
+    func didFailToValidate()
 }
 
-extension BiometricManager: IBiometricManager {
+class BiometricManager {
+    weak var delegate: IBiometricManagerDelegate?
+}
+
+extension BiometricManager {
 
     func validate(reason: String) {
         let localAuthenticationContext = LAContext()

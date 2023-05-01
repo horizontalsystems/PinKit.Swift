@@ -1,4 +1,4 @@
-import RxSwift
+import Combine
 import StorageKit
 
 class PinManager {
@@ -8,7 +8,7 @@ class PinManager {
     private let secureStorage: ISecureStorage
     private let localStorage: ILocalStorage
 
-    private let isPinSetSubject = PublishSubject<Bool>()
+    private let isPinSetSubject = PassthroughSubject<Bool, Never>()
 
     init(secureStorage: ISecureStorage, localStorage: ILocalStorage) {
         self.secureStorage = secureStorage
@@ -17,7 +17,7 @@ class PinManager {
 
 }
 
-extension PinManager: IPinManager {
+extension PinManager {
 
     var isPinSet: Bool {
         secureStorage.value(for: pinKey) != nil
@@ -34,7 +34,7 @@ extension PinManager: IPinManager {
 
     func store(pin: String) throws {
         try secureStorage.set(value: pin, for: pinKey)
-        isPinSetSubject.onNext(true)
+        isPinSetSubject.send(true)
     }
 
     func validate(pin: String) -> Bool {
@@ -44,11 +44,11 @@ extension PinManager: IPinManager {
     func clear() throws {
         try secureStorage.removeValue(for: pinKey)
         localStorage.set(value: false, for: biometricOnKey)
-        isPinSetSubject.onNext(false)
+        isPinSetSubject.send(false)
     }
 
-    var isPinSetObservable: Observable<Bool> {
-        isPinSetSubject.asObservable()
+    var isPinSetPublisher: AnyPublisher<Bool, Never> {
+        isPinSetSubject.eraseToAnyPublisher()
     }
 
 }

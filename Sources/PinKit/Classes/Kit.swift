@@ -1,16 +1,16 @@
+import Combine
 import UIKit
 import LanguageKit
 import StorageKit
-import RxSwift
 
 public class Kit {
     private let secureStorage: ISecureStorage
     private let localStorage: ILocalStorage
 
-    private let biometryManager: IBiometryManager
-    private let pinManager: IPinManager
-    private let lockManager: ILockManager & IUnlockDelegate
-    private let lockoutManager: ILockoutManager
+    private let biometryManager: BiometryManager
+    private let pinManager: PinManager
+    private let lockManager: LockManager
+    private let lockoutManager: LockoutManager
 
     public init(secureStorage: ISecureStorage, localStorage: ILocalStorage) {
         self.secureStorage = secureStorage
@@ -20,14 +20,13 @@ public class Kit {
         pinManager = PinManager(secureStorage: secureStorage, localStorage: localStorage)
         lockManager = LockManager(pinManager: pinManager, localStorage: localStorage)
 
-        let uptimeProvider = UptimeProvider()
-        let lockoutUntilDateFactory = LockoutUntilDateFactory(currentDateProvider: CurrentDateProvider())
-        lockoutManager = LockoutManager(secureStorage: secureStorage, uptimeProvider: uptimeProvider, lockoutTimeFrameFactory: lockoutUntilDateFactory)
+        let lockoutUntilDateFactory = LockoutUntilDateFactory()
+        lockoutManager = LockoutManager(secureStorage: secureStorage, lockoutTimeFrameFactory: lockoutUntilDateFactory)
     }
 
 }
 
-extension Kit: IPinKit {
+extension Kit {
 
     public func set(delegate: IPinKitDelegate?) {
         lockManager.delegate = delegate
@@ -37,16 +36,16 @@ extension Kit: IPinKit {
         pinManager.isPinSet
     }
 
-    public var isPinSetObservable: Observable<Bool> {
-        pinManager.isPinSetObservable
+    public var isPinSetPublisher: AnyPublisher<Bool, Never> {
+        pinManager.isPinSetPublisher
     }
 
     public var biometryType: BiometryType? {
         biometryManager.biometryType
     }
 
-    public var biometryTypeObservable: Observable<BiometryType> {
-        biometryManager.biometryTypeObservable
+    public var biometryTypePublisher: AnyPublisher<BiometryType, Never> {
+        biometryManager.biometryTypePublisher
     }
 
     public func clear() throws {
@@ -95,4 +94,13 @@ extension Kit: IPinKit {
         UnlockPinRouter.module(delegate: delegate, lockManagerDelegate: lockManager, pinManager: pinManager, lockoutManager: lockoutManager, biometryUnlockMode: biometryUnlockMode, insets: insets, cancellable: cancellable, autoDismiss: autoDismiss, biometryManager: biometryManager)
     }
 
+}
+
+public protocol IPinKitDelegate: AnyObject {
+    func onLock(delegate: IUnlockDelegate)
+}
+
+public protocol IUnlockDelegate: AnyObject {
+    func onUnlock()
+    func onCancelUnlock()
 }
