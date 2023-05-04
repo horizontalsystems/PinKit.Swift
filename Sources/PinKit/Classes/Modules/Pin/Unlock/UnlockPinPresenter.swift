@@ -27,6 +27,8 @@ class UnlockPinPresenter {
 extension UnlockPinPresenter: IPinViewDelegate {
 
     func viewDidLoad() {
+        lockManagerDelegate.onLock()
+
         view?.addPage(withDescription: "unlock_pin.info")
 
         interactor.subscribeBiometryType()

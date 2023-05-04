@@ -101,6 +101,11 @@ public protocol IPinKitDelegate: AnyObject {
 }
 
 public protocol IUnlockDelegate: AnyObject {
+    func onLock()
     func onUnlock()
     func onCancelUnlock()
+}
+
+extension IUnlockDelegate {
+    public func onLock() {}
 }

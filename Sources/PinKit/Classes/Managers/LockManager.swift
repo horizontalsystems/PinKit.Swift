@@ -59,6 +59,10 @@ extension LockManager {
 
 extension LockManager: IUnlockDelegate {
 
+    func onLock() {
+        isLocked = true
+    }
+
     func onUnlock() {
         isLocked = false
     }
