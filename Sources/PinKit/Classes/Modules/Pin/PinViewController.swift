@@ -3,7 +3,7 @@ import SnapKit
 import ThemeKit
 import ComponentKit
 
-class PinViewController: ThemeViewController {
+public class PinViewController: ThemeViewController {
     private let keyboardSideMargin: CGFloat = UIScreen.main.bounds.width <= 320 ? 32 : 48 // decrease margin only for small screen
 
     let delegate: IPinViewDelegate
@@ -33,7 +33,7 @@ class PinViewController: ThemeViewController {
         fatalError("init(coder:) has not been implemented")
     }
 
-    override func viewDidLoad() {
+    open override func viewDidLoad() {
         super.viewDidLoad()
 
         let insets = UIEdgeInsets(top: self.insets.top, left: self.insets.left, bottom: CGFloat.margin8x + self.insets.bottom, right: self.insets.right)
