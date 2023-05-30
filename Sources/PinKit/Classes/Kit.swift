@@ -90,17 +90,27 @@ extension Kit {
         SetPinRouter.module(delegate: delegate, pinManager: pinManager)
     }
 
-    public func unlockPinModule(delegate: IUnlockDelegate, biometryUnlockMode: BiometryUnlockMode, insets: UIEdgeInsets, cancellable: Bool, autoDismiss: Bool) -> UIViewController {
-        UnlockPinRouter.module(delegate: delegate, lockManagerDelegate: lockManager, pinManager: pinManager, lockoutManager: lockoutManager, biometryUnlockMode: biometryUnlockMode, insets: insets, cancellable: cancellable, autoDismiss: autoDismiss, biometryManager: biometryManager)
+    public func unlockPinModule(biometryUnlockMode: BiometryUnlockMode, insets: UIEdgeInsets, cancellable: Bool, autoDismiss: Bool, onUnlock: (() -> ())? = nil, onCancelUnlock: (() -> ())? = nil) -> UIViewController {
+        UnlockPinRouter.module(
+                pinManager: pinManager,
+                lockoutManager: lockoutManager,
+                biometryManager: biometryManager,
+                biometryUnlockMode: biometryUnlockMode,
+                insets: insets,
+                cancellable: cancellable,
+                autoDismiss: autoDismiss,
+                onUnlock: { [weak self] in
+                    self?.lockManager.onUnlock()
+                    onUnlock?()
+                },
+                onCancelUnlock: {
+                    onCancelUnlock?()
+                }
+        )
     }
 
 }
 
 public protocol IPinKitDelegate: AnyObject {
-    func onLock(delegate: IUnlockDelegate)
-}
-
-public protocol IUnlockDelegate: AnyObject {
-    func onUnlock()
-    func onCancelUnlock()
+    func onLock()
 }

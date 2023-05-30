@@ -4,11 +4,13 @@ import StorageKit
 class UnlockPinRouter {
     weak var viewController: UIViewController?
 
-    private let delegate: IUnlockDelegate
+    private let onUnlock: () -> ()
+    private let onCancelUnlock: () -> ()
     private let autoDismiss: Bool
 
-    init(delegate: IUnlockDelegate, autoDismiss: Bool) {
-        self.delegate = delegate
+    init(onUnlock: @escaping () -> (), onCancelUnlock: @escaping () -> (), autoDismiss: Bool) {
+        self.onUnlock = onUnlock
+        self.onCancelUnlock = onCancelUnlock
         self.autoDismiss = autoDismiss
     }
 
@@ -22,9 +24,9 @@ extension UnlockPinRouter: IUnlockPinRouter {
         }
 
         if didUnlock {
-            delegate.onUnlock()
+            onUnlock()
         } else {
-            delegate.onCancelUnlock()
+            onCancelUnlock()
         }
     }
 
@@ -32,13 +34,13 @@ extension UnlockPinRouter: IUnlockPinRouter {
 
 extension UnlockPinRouter {
 
-    static func module(delegate: IUnlockDelegate, lockManagerDelegate: IUnlockDelegate, pinManager: PinManager, lockoutManager: LockoutManager, biometryUnlockMode: BiometryUnlockMode, insets: UIEdgeInsets, cancellable: Bool = true, autoDismiss: Bool = true, biometryManager: BiometryManager) -> UIViewController {
+    static func module(pinManager: PinManager, lockoutManager: LockoutManager, biometryManager: BiometryManager, biometryUnlockMode: BiometryUnlockMode, insets: UIEdgeInsets, cancellable: Bool, autoDismiss: Bool, onUnlock: @escaping () -> (), onCancelUnlock: @escaping () -> ()) -> UIViewController {
         let biometricManager = BiometricManager()
         let timer = OneTimeTimer()
 
-        let router = UnlockPinRouter(delegate: delegate, autoDismiss: autoDismiss)
+        let router = UnlockPinRouter(onUnlock: onUnlock, onCancelUnlock: onCancelUnlock, autoDismiss: autoDismiss)
         let interactor = UnlockPinInteractor(pinManager: pinManager, biometricManager: biometricManager, lockoutManager: lockoutManager, timer: timer, biometryManager: biometryManager)
-        let presenter = UnlockPinPresenter(interactor: interactor, router: router, lockManagerDelegate: lockManagerDelegate, configuration: .init(cancellable: cancellable, biometryUnlockMode: biometryUnlockMode))
+        let presenter = UnlockPinPresenter(interactor: interactor, router: router, configuration: .init(cancellable: cancellable, biometryUnlockMode: biometryUnlockMode))
 
         let viewController = PinViewController(delegate: presenter, insets: insets)
 

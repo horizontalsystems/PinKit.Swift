@@ -52,18 +52,11 @@ extension LockManager {
         }
 
         isLocked = true
-        delegate?.onLock(delegate: self)
+        delegate?.onLock()
     }
-
-}
-
-extension LockManager: IUnlockDelegate {
 
     func onUnlock() {
         isLocked = false
-    }
-
-    func onCancelUnlock() {
     }
 
 }
