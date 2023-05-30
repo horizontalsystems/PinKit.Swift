@@ -7,14 +7,12 @@ class UnlockPinPresenter {
     weak var view: IPinView?
     private let interactor: IUnlockPinInteractor
     private let router: IUnlockPinRouter
-    private let lockManagerDelegate: IUnlockDelegate
 
     private let configuration: UnlockPresenterConfiguration
 
-    init(interactor: IUnlockPinInteractor, router: IUnlockPinRouter, lockManagerDelegate: IUnlockDelegate, configuration: UnlockPresenterConfiguration = .init(cancellable: false, biometryUnlockMode: .auto)) {
+    init(interactor: IUnlockPinInteractor, router: IUnlockPinRouter, configuration: UnlockPresenterConfiguration = .init(cancellable: false, biometryUnlockMode: .auto)) {
         self.interactor = interactor
         self.router = router
-        self.lockManagerDelegate = lockManagerDelegate
         self.configuration = configuration
     }
 
@@ -46,7 +44,6 @@ extension UnlockPinPresenter: IPinViewDelegate {
 
     func onEnter(pin: String, forPage index: Int) {
         if interactor.unlock(with: pin) {
-            lockManagerDelegate.onUnlock()
             router.dismiss(didUnlock: true)
         } else {
             view?.showPinWrong(page: Page.unlock.rawValue)
@@ -54,7 +51,6 @@ extension UnlockPinPresenter: IPinViewDelegate {
     }
 
     func onCancel() {
-        lockManagerDelegate.onCancelUnlock()
         router.dismiss(didUnlock: false)
     }
 
@@ -67,7 +63,6 @@ extension UnlockPinPresenter: IPinViewDelegate {
 extension UnlockPinPresenter: IUnlockPinInteractorDelegate {
 
     func didBiometricUnlock() {
-        lockManagerDelegate.onUnlock()
         router.dismiss(didUnlock: true)
     }
 
