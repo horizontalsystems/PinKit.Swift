@@ -19,6 +19,8 @@
 "unlock_pin.info" = "Код Доступа";
 "unlock_pin.cant_save_pin" = "Ой! Мы не можем сохранить ваш код. Пожалуйста, свяжитесь с нами как можно скорее!";
 "unlock_pin.blocked_until" = "Отключено до: %@";
+"unlock.pin.attempts_left" = "У вас осталось попыток: %@";
+"unlock.pin.incorrect" = "Неверно";
 "rate_list.updated" = "обновлено";
 "biometric_usage_reason" = "Разблокировать Кошелек";
 
