@@ -19,6 +19,8 @@
 "unlock_pin.info" = "Kod";
 "unlock_pin.cant_save_pin" = "Eyvah! PİNninizi kaydetemiyoruz, acilen bizimle iletişime geçin!";
 "unlock_pin.blocked_until" = "Engellendi: %@";
+"unlock.pin.attempts_left" = "Kalan deneme sayısı: %@";
+"unlock.pin.incorrect" = "Yanlış";
 "rate_list.updated" = "güncellendi";
 "biometric_usage_reason" = "Cüzdan kilidini aç";
 

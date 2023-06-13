@@ -19,6 +19,8 @@
 "unlock_pin.info" = "Code";
 "unlock_pin.cant_save_pin" = "Hoppla! Wir können den Code nicht speichern - bitte kontaktieren Sie uns so schnell wie möglich.";
 "unlock_pin.blocked_until" = "Deaktiviert bis: %@ ";
+"unlock.pin.attempts_left" = "Verbleibende Versuche: %@";
+"unlock.pin.incorrect" = "Ungültig";
 "rate_list.updated" = "aktualisiert";
 "biometric_usage_reason" = "Wallet entsperren";
 

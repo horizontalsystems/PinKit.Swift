@@ -19,8 +19,8 @@
 "unlock_pin.info" = "Passcode";
 "unlock_pin.cant_save_pin" = "Ouch! We cannot save your passcode, please contact us asap!";
 "unlock_pin.blocked_until" = "Disabled until: %@";
-"unlock.pin.attempts_left" = "Attempts left: %@";
-"unlock.pin.incorrect" = "Incorrect";
+"unlock.pin.attempts_left" = "Tentativas restantes: %@";
+"unlock.pin.incorrect" = "Incorreto";
 "rate_list.updated" = "updated";
 "biometric_usage_reason" = "Unlock wallet";
 
