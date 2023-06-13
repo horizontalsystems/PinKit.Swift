@@ -157,6 +157,7 @@ extension PinViewController: IPinView {
     }
 
     func showPinWrong(page index: Int) {
+        show(error: "unlock.pin.incorrect", forPage: index)
         pinViews[index].shakeAndClear()
     }
 
@@ -178,6 +179,12 @@ extension PinViewController: IPinView {
         lockoutView.hide()
         holderView.isHidden = false
         numPad.enable()
+
+        if let attemptsLeft = attemptsLeft {
+            pinViews[index].showAttepmtsInfo(attepmtsLeft: attemptsLeft)
+        } else {
+            pinViews[index].hideAttemptsLeft()
+        }
     }
 
 }

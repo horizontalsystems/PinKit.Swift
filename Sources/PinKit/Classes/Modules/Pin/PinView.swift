@@ -8,6 +8,7 @@ class PinView: UIView {
 
     let pinDotsView = PinDotsView()
     private let topLabel = UILabel()
+    private let infoLabel = UILabel()
     private let cancelButtonView = UIView()
     private let cancelButton = SecondaryButton()
 
@@ -26,7 +27,6 @@ class PinView: UIView {
         wrapper.addSubview(pinDotsView)
         pinDotsView.snp.makeConstraints { maker in
             maker.centerX.equalToSuperview()
-            maker.bottom.equalToSuperview()
         }
 
         wrapper.addSubview(topLabel)
@@ -39,6 +39,15 @@ class PinView: UIView {
         topLabel.lineBreakMode = .byWordWrapping
         topLabel.numberOfLines = 0
         topLabel.textAlignment = .center
+
+        wrapper.addSubview(infoLabel)
+        infoLabel.snp.makeConstraints { maker in
+            maker.top.equalTo(self.pinDotsView.snp.bottom).offset(CGFloat.margin16)
+            maker.leading.trailing.equalToSuperview().inset(44)
+            maker.bottom.equalToSuperview()
+        }
+
+        infoLabel.textAlignment = .center
 
         addSubview(cancelButtonView)
         cancelButtonView.snp.makeConstraints { maker in
@@ -80,6 +89,9 @@ class PinView: UIView {
 
         pinDotsView.clean()
         pinDotsView.onPinEnter = onPinChange
+
+        infoLabel.font = .subhead2
+        infoLabel.textColor = .themeLeah
     }
 
     func shakeAndClear() {
@@ -91,6 +103,16 @@ class PinView: UIView {
     func showCancelButton(target: Any?, action: Selector) {
         cancelButton.isHidden = false
         cancelButton.addTarget(target, action: action, for: .touchUpInside)
+    }
+
+    func showAttepmtsInfo(attepmtsLeft: Int) {
+        infoLabel.text = "unlock.pin.attempts_left".localized("\(attepmtsLeft)")
+        infoLabel.isHidden = false
+    }
+
+    func hideAttemptsLeft() {
+        infoLabel.text = ""
+        infoLabel.isHidden = true
     }
 
 }
