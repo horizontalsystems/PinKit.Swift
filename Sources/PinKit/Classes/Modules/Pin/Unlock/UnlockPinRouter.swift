@@ -19,15 +19,21 @@ class UnlockPinRouter {
 extension UnlockPinRouter: IUnlockPinRouter {
 
     func dismiss(didUnlock: Bool) {
+        let action = { [weak self] in
+            if didUnlock {
+                self?.onUnlock()
+            } else {
+                self?.onCancelUnlock()
+            }
+        }
         if autoDismiss {
-            viewController?.dismiss(animated: true)
+            viewController?.dismiss(animated: true) {
+                action()
+            }
+        } else {
+            action()
         }
 
-        if didUnlock {
-            onUnlock()
-        } else {
-            onCancelUnlock()
-        }
     }
 
 }
